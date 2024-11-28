@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         gameSurface!!.setRootGameObject(game)
 
         setupControls()
+        /*
+        yo
+        */
     }
 
     private fun setupControls() {
