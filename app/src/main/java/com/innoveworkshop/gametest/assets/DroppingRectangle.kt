@@ -7,18 +7,24 @@ class DroppingRectangle(
     position: Vector?,
     width: Float,
     height: Float,
-    dropRate: Float,
+    val mass: Float,
     color: Int
 ) : Rectangle(position, width, height, color) {
-    var dropRate: Float = 0f
+    private val gravity = 9.8f
+    private var velocity = Vector(0f, 0f)
+    private val worldScale = 10f
 
-    init {
-        this.dropRate = dropRate
-    }
 
     override fun onFixedUpdate() {
         super.onFixedUpdate()
 
-        if (!isFloored) position.y += dropRate
+        if (!isFloored) {
+            val gravityForce = gravity * mass // F = g * m
+            velocity.y += gravityForce / mass // Acceleration: a = F / m = g
+            position.y += velocity.y / worldScale  // Update position
+        }
+    }
+    fun isOutOfBounds(surfaceHeight: Float): Boolean {
+        return position.y > surfaceHeight - height
     }
 }
