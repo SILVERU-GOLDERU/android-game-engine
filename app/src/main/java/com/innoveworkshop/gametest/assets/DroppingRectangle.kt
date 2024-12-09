@@ -1,5 +1,6 @@
 package com.innoveworkshop.gametest.assets
 
+import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
 
@@ -8,14 +9,28 @@ class DroppingRectangle(
     width: Float,
     height: Float,
     val mass: Float,
-    color: Int
+    color: Int,
+    private val mainActivity: MainActivity
 ) : Rectangle(position, width, height, color) {
     private val gravity = 9.8f
     private var velocity = Vector(0f, 0f)
     private val worldScale = 10f
 
 
+    fun collidesWith(human: Humans): Boolean {
+        return position.x < human.position.x + human.width &&
+                position.x + width > human.position.x &&
+                position.y < human.position.y + human.height &&
+                position.y + height > human.position.y
+    }
+
+    fun onCollision(human: Humans) {
+        println("DroppingRectangle collided with Human")
+        this.destroy() //destroy the rectangle
+    }
+
     override fun onFixedUpdate() {
+        if (mainActivity.isPaused) return
         super.onFixedUpdate()
 
         if (!isFloored) {

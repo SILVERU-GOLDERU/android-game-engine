@@ -1,5 +1,6 @@
 package com.innoveworkshop.gametest.assets
 
+import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
 
@@ -8,7 +9,8 @@ class Humans(
     width: Float,
     height: Float,
     val mass: Float,
-    color: Int
+    color: Int,
+    private val mainActivity: MainActivity
 ) : Rectangle(position, width, height, color) {
 
     private var speed = 5f // Default walking speed
@@ -20,7 +22,14 @@ class Humans(
         }
     }
 
+    fun onCollision(rectangle: DroppingRectangle) {
+        println("Human collided with DroppingRectangle")
+        this.destroy() // remove the human
+    }
+
+
     override fun onFixedUpdate() {
+        if (mainActivity.isPaused) return // Skip updates if paused
         super.onFixedUpdate()
 
         // Move the human

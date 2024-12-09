@@ -18,19 +18,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/pause_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Pause"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/controls_layout"
         android:layout_width="0dp"
-        android:layout_height="211dp"
+        android:layout_height="150dp"
+        android:background="#97978D"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/up_button"
+            android:id="@+id/drop_button"
             android:layout_width="100dp"
             android:layout_height="70dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="30dp"
             android:text="Drop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,12 +64,11 @@
             android:layout_height="70dp"
             android:layout_marginStart="23dp"
             android:text="Right"
-            android:textColorLink="#D32A2A"
-            app:iconTint="#921313"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/left_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.496" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
