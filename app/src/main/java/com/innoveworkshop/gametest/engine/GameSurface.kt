@@ -75,7 +75,6 @@ class GameSurface @JvmOverloads constructor(
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                //stops everything
                 stopwatch.pause()
                 timer?.cancel()
                 timer = null
@@ -109,8 +108,8 @@ class GameSurface @JvmOverloads constructor(
         // Draw stopwatch time
         val timeText = stopwatch.getFormattedTime()
         val textWidth = paint.measureText(timeText) // Measure the width of the text
-        val x = (width - textWidth) / 4f // Center horizontally
-        val y = height / 15f // Adjust vertical position as needed
+        val x = (width - textWidth) / 4f
+        val y = height / 15f
         canvas.drawText(timeText, x, y, paint)
 
         val humandestroyedText = "Humans Bricked: $destroyedHumansCount"

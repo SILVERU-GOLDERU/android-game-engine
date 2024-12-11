@@ -215,8 +215,7 @@ class MainActivity : AppCompatActivity() {
 
 
         }
-
-
+        
         fun spawnNewFallingItem() {
             if (rectangle == null || surface == null) return
 

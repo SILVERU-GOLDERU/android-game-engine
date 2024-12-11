@@ -33,12 +33,12 @@ class DroppingRectangle(
 
     fun onCollision(human: Humans) {
         println("DroppingRectangle collided with Human")
-        this.destroy() //destroy the rectangle
+        this.destroy()
     }
 
     fun onCollision(homeless: Homeless) {
         println("DroppingRectangle collided with Homeless")
-        this.destroy() //destroy the rectangle
+        this.destroy()
     }
 
     override fun onFixedUpdate() {
