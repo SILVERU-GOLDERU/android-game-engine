@@ -4,44 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#bebab8"
     tools:context=".MainActivity">
 
     <com.innoveworkshop.gametest.engine.GameSurface
         android:id="@+id/gameSurface"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
         android:outlineAmbientShadowColor="@color/black"
         android:outlineSpotShadowColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/controls_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/pause_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:text="Pause"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/controls_layout"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:background="#97978D"
+        android:layout_width="410dp"
+        android:layout_height="303dp"
+        android:background="#bebab8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameSurface">
 
         <Button
             android:id="@+id/drop_button"
+            style="@style/CustomDropButtonStyle"
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:rotation="-30"
             android:text="Drop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,6 +67,59 @@
             app:layout_constraintStart_toEndOf="@+id/left_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.496" />
+
+        <Button
+            android:id="@+id/pause_button"
+            style="@style/CustomButtonStyle"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="70dp"
+            android:rotation="-30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/start_button"
+            app:layout_constraintTop_toBottomOf="@+id/right_button"
+            app:layout_constraintVertical_bias="0.483" />
+
+
+        <TextView
+            android:id="@+id/pause_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:rotation="-30"
+            android:text="Pause"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/pause_button"
+            app:layout_constraintEnd_toEndOf="@id/pause_button"
+            app:layout_constraintStart_toStartOf="@id/pause_button"
+            app:layout_constraintTop_toTopOf="@id/pause_button" />
+
+        <Button
+            android:id="@+id/start_button"
+            style="@style/CustomButtonStyle"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:rotation="-30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/right_button"
+            app:layout_constraintVertical_bias="0.483" />
+
+        <TextView
+            android:id="@+id/start_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:rotation="-30"
+            android:text="Start"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/start_button"
+            app:layout_constraintEnd_toEndOf="@id/start_button"
+            app:layout_constraintStart_toStartOf="@id/start_button"
+            app:layout_constraintTop_toTopOf="@id/start_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

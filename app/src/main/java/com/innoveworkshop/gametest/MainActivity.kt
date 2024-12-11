@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.innoveworkshop.gametest.assets.DroppingRectangle
 import com.innoveworkshop.gametest.assets.Humans
+import com.innoveworkshop.gametest.assets.Homeless
 import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
@@ -20,9 +21,13 @@ class MainActivity : AppCompatActivity() {
     protected var leftButton: Button? = null
     protected var rightButton: Button? = null
     protected var pauseButton: Button? = null
+    protected var startButton: Button? = null
 
     var isPaused = true
     private var isGameStarted = false
+    private var isGameOver = false
+
+    private var dropCount = 0
 
     protected var game: Game? = null
 
@@ -42,11 +47,11 @@ class MainActivity : AppCompatActivity() {
                 // App has lost focus (e.g., multitasking mode)
                 if (!isPaused) { // Only pause if not already paused
                     isPaused = true
-                    pauseButton?.text = if (isGameStarted){
-                        "Resume"
-                    } else{
-                        "Start"
-                    }
+//                    pauseButton?.text = if (isGameStarted){
+//                        "Resume"
+//                    } else{
+//                        "Start"
+//                    }
                     gameSurface?.pauseStopwatch()
                 }
             }
@@ -58,77 +63,89 @@ class MainActivity : AppCompatActivity() {
     private fun setupControls() {
 
         pauseButton = findViewById<View>(R.id.pause_button) as Button
-        pauseButton!!.text = "Start"
+        startButton = findViewById<View>(R.id.start_button) as Button
+        dropButton = findViewById<View>(R.id.drop_button) as Button
+        leftButton = findViewById<View>(R.id.left_button) as Button
+        rightButton = findViewById<View>(R.id.right_button) as Button
+
+
+        //pauseButton!!.text = "Start"
         pauseButton!!.setOnClickListener {
-            if (!isGameStarted) {
-                // First click starts the game
-                isGameStarted = true
-                isPaused = false
-                pauseButton!!.text = "Pause"
-                game!!.startGame()
-                gameSurface?.startStopwatch()
-            } else {
+            if (isGameStarted) {
                 // Subsequent clicks toggle pause/resume
                 isPaused = !isPaused
-                val buttonText = if (isPaused) "Resume" else "Pause"
-                pauseButton!!.text = buttonText
+                //val buttonText = if (isPaused) "Resume" else "Pause"
+                //pauseButton!!.text = buttonText
                 if (isPaused) {
                     gameSurface?.pauseStopwatch()
                 } else {
                     gameSurface?.startStopwatch()
                 }
             }
-
-
-
-//            game?.let {
-//                isPaused = !isPaused // Toggle pause state
-//                val buttonText = if (isPaused) "Resume" else "Pause"
-//                pauseButton!!.text = buttonText
-//            }
-//
-//            if (isPaused) {
-//                gameSurface?.pauseStopwatch() // Pause the stopwatch
-//            } else {
-//                gameSurface?.startStopwatch() // Resume the stopwatch
-//            }
         }
 
-        dropButton = findViewById<View>(R.id.drop_button) as Button
+        //startButton!!.text = "Start"
+        startButton!!.setOnClickListener {
+
+            if (!isGameStarted) {
+
+                isGameStarted = true
+                isPaused = false
+                isGameOver = false
+                dropCount = 0
+                game!!.startGame()
+                gameSurface?.startStopwatch()
+
+            } else if (isGameOver) {
+                resetGame()
+            }
+
+        }
+
         dropButton!!.setOnClickListener {
-            if (isPaused == false){
+            if (!isPaused && !isGameOver) {
+                dropCount++
+                println("Drop button pressed $dropCount times")
                 game!!.spawnNewFallingItem()
+
+                if (dropCount >= 50000000) {
+                    game!!.endGame()
+                }
             }
         }
 
-        leftButton = findViewById<View>(R.id.left_button) as Button
-        rightButton = findViewById<View>(R.id.right_button) as Button
 
         leftButton!!.setOnTouchListener { _, event ->
-            when (event.action) {
-                android.view.MotionEvent.ACTION_DOWN -> {
-                    game!!.moveLeft = true
-                    println("Move Left: true")
-                }
-                android.view.MotionEvent.ACTION_UP -> {
-                    game!!.moveLeft = false
-                    println("Move Left: false")
+            if (!isGameOver) {
+                when (event.action) {
+                    android.view.MotionEvent.ACTION_DOWN -> {
+                        game!!.moveLeft = true
+                        println("Move Left: true")
+                    }
+
+                    android.view.MotionEvent.ACTION_UP -> {
+                        game!!.moveLeft = false
+                        println("Move Left: false")
+                    }
                 }
             }
             true
         }
 
         rightButton!!.setOnTouchListener { _, event ->
-            when (event.action) {
-                android.view.MotionEvent.ACTION_DOWN -> {
-                    game!!.moveRight = true
-                    println("Move Right: true")
-                }
-                android.view.MotionEvent.ACTION_UP -> {
-                    game!!.moveRight = false
-                    println("Move Right: false")
-                }
+            if (!isGameOver) {
+                when (event.action) {
+                    android.view.MotionEvent.ACTION_DOWN -> {
+                        game!!.moveRight = true
+                        println("Move Right: true")
+                    }
 
+                    android.view.MotionEvent.ACTION_UP -> {
+                        game!!.moveRight = false
+                        println("Move Right: false")
+                    }
+
+                }
             }
             true
         }
@@ -136,13 +153,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun resetGame() {
+        isPaused = true
+        isGameStarted = false
+        isGameOver = false
+        dropCount = 0
+
+        // Clear the current game
+        gameSurface?.pauseStopwatch()
+        gameSurface?.resetStopwatch()
+        game = Game()
+        gameSurface?.setRootGameObject(game)
+        gameSurface?.invalidate()
+
+        println("Game reset. Ready to start again.")
+    }
 
     inner class Game : GameObject() {
         private var surface: GameSurface? = null
-        var circle: Circle? = null
         var rectangle: Rectangle? = null
+        var floor: Rectangle? = null
         private val fallingItems = mutableListOf<DroppingRectangle>()
         private val walkingHumans = mutableListOf<Humans>()
+        private val walkingHomeless = mutableListOf<Homeless>()
 
         var moveLeft = false
         var moveRight = false
@@ -152,8 +185,11 @@ class MainActivity : AppCompatActivity() {
         private val deceleration = 1.5f // Deceleration
 
 
-        private var elapsedTime = 0f // Tracks elapsed time for spawning humans
-        private val spawnInterval = 0.4f // Spawn humans every 1 second
+        private var humanelapsedTime = 0f // Tracks elapsed time for spawning humans
+        private val humanspawnInterval = 0.4f // Spawn humans every 1 second
+
+        private var homelesselapsedTime = 0f // Tracks elapsed time for spawning homeless
+        private val homelessspawnInterval = 2f // Spawn homeless every 1 second
 
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
@@ -168,18 +204,28 @@ class MainActivity : AppCompatActivity() {
                 surface.addGameObject(rectangle!!)
             }
 
+            if (floor == null){
+                floor = Rectangle(
+                    Vector((surface!!.width / 2).toFloat(), (surface.height / 7).toFloat()+30f),
+                    6000f,20f,
+                    Color.BLACK
+                )
+                surface.addGameObject(floor!!)
+            }
+
 
         }
+
 
         fun spawnNewFallingItem() {
             if (rectangle == null || surface == null) return
 
             // Create a new falling rectangle at the rectangle's position
             val item = DroppingRectangle(
-                Vector(rectangle!!.position.x, rectangle!!.position.y), // Use the existing rectangle instance
+                Vector(rectangle!!.position.x, rectangle!!.position.y+30f), // Use the existing rectangle instance
                 70f,
                 30f,
-                2f,
+                5f,
                 Color.BLACK,
                 this@MainActivity
             )
@@ -209,14 +255,43 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        fun spawnNewHomeless() {
+
+            val screenWidth = surface!!.width
+            val screenHeight = surface!!.height
+            val spawnX = if (Math.random() < 0.5) 0f else (screenWidth - 70f)
+
+
+            val item = Homeless(
+                Vector(spawnX, (screenHeight - 25f)),
+                25f,
+                70f,
+                2f,
+                Color.parseColor("#006400"),
+                this@MainActivity
+            )
+
+            walkingHomeless.add(item)
+            surface!!.addGameObject(item) // Ensure surface is non-null
+        }
+
+
         fun startGame() {
             isPaused = false
-            elapsedTime = 0f
+            humanelapsedTime = 0f
+            homelesselapsedTime = 0f
+
+        }
+        fun endGame() {
+            isPaused = true
+            isGameStarted = false
+            isGameOver = true
+            println("Game Over! You pressed the drop button 5 times.")
         }
 
         override fun onFixedUpdate() {
 
-            if (isPaused) return
+            if (isPaused || isGameOver) return
 
             super.onFixedUpdate()
 
@@ -289,10 +364,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            elapsedTime += 0.016f // 60 FPS update rate
-            if (elapsedTime >= spawnInterval) {
+            humanelapsedTime += 0.016f // 60 FPS update rate
+            if (humanelapsedTime >= humanspawnInterval) {
                 spawnNewHuman()
-                elapsedTime = 0f
+                humanelapsedTime = 0f
+            }
+
+            homelesselapsedTime += 0.016f // 60 FPS update rate
+            if (homelesselapsedTime >= homelessspawnInterval) {
+                spawnNewHomeless()
+                homelesselapsedTime = 0f
             }
 
             //human spawn
@@ -309,6 +390,21 @@ class MainActivity : AppCompatActivity() {
                     humanIterator.remove()
                 }
             }
+
+            //homeless spawn
+            val homelessIterator = walkingHomeless.iterator()
+            while (homelessIterator.hasNext()) {
+                val homeless = homelessIterator.next()
+
+
+                homeless.onFixedUpdate()
+
+                if (homeless.isOutOfBounds(surface!!.height.toFloat())) {
+                    homeless.destroy()
+                    homelessIterator.remove()
+                }
+            }
+
         }
     }
 }

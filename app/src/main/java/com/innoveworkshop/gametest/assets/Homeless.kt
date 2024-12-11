@@ -4,7 +4,7 @@ import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.engine.Vector
 
-class Humans(
+class Homeless(
     position: Vector,
     width: Float,
     height: Float,
@@ -13,18 +13,18 @@ class Humans(
     private val mainActivity: MainActivity
 ) : Rectangle(position, width, height, color) {
 
-    private var speed = 4f // Default walking speed
+    private var speed = 6f // Default walking speed
 
     init {
         // Set movement direction based on spawn position
         if (position.x > 0f) {
-            speed = -4f // Move left if spawned on the right
+            speed = -6f // Move left if spawned on the right
         }
     }
 
     fun onCollision(rectangle: DroppingRectangle) {
-        println("Human collided with DroppingRectangle")
-        this.destroy() // remove the human
+        println("Homeless collided with DroppingRectangle")
+        this.destroy() // remove the homeless
     }
 
 
@@ -32,11 +32,11 @@ class Humans(
         if (mainActivity.isPaused) return // Skip updates if paused
         super.onFixedUpdate()
 
-        // Move the human
+
         position.x += speed
     }
 
-    // Check if the human has moved off the screen
+    // Check if the homeless has moved off the screen
     fun isOutOfBounds(surfaceWidth: Float): Boolean {
         return position.x + width < 0 || position.x > surfaceWidth
     }

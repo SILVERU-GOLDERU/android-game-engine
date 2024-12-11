@@ -11,6 +11,7 @@ import com.innoveworkshop.gametest.MainActivity
 import com.innoveworkshop.gametest.assets.Stopwatch
 import com.innoveworkshop.gametest.assets.DroppingRectangle
 import com.innoveworkshop.gametest.assets.Humans
+import com.innoveworkshop.gametest.assets.Homeless
 import java.util.Timer
 import java.util.TimerTask
 
@@ -35,6 +36,7 @@ class GameSurface @JvmOverloads constructor(
     private var mainActivity: MainActivity? = null
 
     private var destroyedHumansCount = 0
+    private var destroyedHomelessCount = 0
 
     fun initializeWithMainActivity(activity: MainActivity) {
         this.mainActivity = activity
@@ -107,17 +109,24 @@ class GameSurface @JvmOverloads constructor(
         // Draw stopwatch time
         val timeText = stopwatch.getFormattedTime()
         val textWidth = paint.measureText(timeText) // Measure the width of the text
-        val x = (width - textWidth) / 2f // Center horizontally
+        val x = (width - textWidth) / 4f // Center horizontally
         val y = height / 15f // Adjust vertical position as needed
         canvas.drawText(timeText, x, y, paint)
 
-        val destroyedText = "Humans Bricked: $destroyedHumansCount"
-        val destroyedTextWidth = paint.measureText(destroyedText)
-        canvas.drawText(destroyedText, width - destroyedTextWidth - 20f, height / 15f, paint)
+        val humandestroyedText = "Humans Bricked: $destroyedHumansCount"
+        val humandestroyedTextWidth = paint.measureText(humandestroyedText)
+        canvas.drawText(humandestroyedText, width - humandestroyedTextWidth - 20f, height / 15f, paint)
+
+        val homelessdestroyedText = "Homeless Bricked: $destroyedHomelessCount"
+        val homelessdestroyedTextWidth = paint.measureText(homelessdestroyedText)
+        canvas.drawText(homelessdestroyedText, width - homelessdestroyedTextWidth - 20f, height / 10f, paint)
     }
 
     fun incrementDestroyedHumans() {
         destroyedHumansCount++
+    }
+    fun incrementDestroyedHomeless() {
+        destroyedHomelessCount++
     }
 
     fun startStopwatch() {
@@ -131,6 +140,7 @@ class GameSurface @JvmOverloads constructor(
     fun resetStopwatch() {
         stopwatch.reset()
     }
+
 
     internal inner class FixedUpdateTimer : TimerTask() {
         override fun run() {
@@ -157,6 +167,19 @@ class GameSurface @JvmOverloads constructor(
                     human.onCollision(rectangle)
 
                     incrementDestroyedHumans()
+                }
+            }
+        }
+
+        val homeless = gameObjects.filterIsInstance<Homeless>()
+
+        for (rectangle in droppingRectangles) {
+            for (homeless in homeless) {
+                if (rectangle.collidesWith(homeless)) {
+                    rectangle.onCollision(homeless)
+                    homeless.onCollision(rectangle)
+
+                    incrementDestroyedHomeless()
                 }
             }
         }

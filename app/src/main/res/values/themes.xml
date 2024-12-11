@@ -1,9 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.GameTest" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/black</item>
+        <item name="buttonStyle">@style/CustomButtonStyle</item>
     </style>
 
     <style name="Theme.GameTest" parent="Base.Theme.GameTest" />
+
+    <!-- Custom button style -->
+    <style name="CustomButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">#817D7E</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <!-- Drop button style -->
+    <style name="CustomDropButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">#FF0090</item>
+        <item name="android:textColor">#000000</item>
+    </style>
 </resources>
